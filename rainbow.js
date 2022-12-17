@@ -28,7 +28,7 @@ function makeElementRainbow(element, cycleDuration, updateInterval, blurRadius) 
 		let color = HSVtoRGB(epochTime / cycleDuration, 1, 1) // The HSVtoRGB function already modulos the hue, so dividing is enough
 		// Apply the color
 		element.style.color = `rgb(${color.r} ${color.g} ${color.b})`
-		element.style.textShadow = `0 0 ${blurRadius}px rgb(${color.r} ${color.g} ${color.b})`
+		if (blurRadius > 0) element.style.textShadow = `0 0 ${blurRadius}px rgb(${color.r} ${color.g} ${color.b})`
 	}, updateInterval)
 	// Store the interval ID so that the makeElementNotRainbow function can clear it
 	element.dataset.rainbowIntervalId = rainbowIntervalID
@@ -44,5 +44,8 @@ function makeElementNotRainbow(element) {
 	// Clean up
 	delete element.dataset.rainbow
 	delete element.dataset.rainbowIntervalId
-	// TODO: Figure out a good way to remove color from the style attribute (the user might have used .style as well, can't interfere with that) 
+	element.style.color = ''
+	element.style.textShadow = ''
+	if (element.style.length == 0) element.removeAttribute('style')
+	// TODO: Check what the color and textShadow were before making it rainbow, then reapply those styles here
 }
